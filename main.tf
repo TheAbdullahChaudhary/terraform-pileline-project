@@ -2,39 +2,12 @@ provider "aws" {
   region = "ap-south-1"
 }
 
-resource "aws_instance" "my_instance" {
-  ami                         = "ami-0f58b397bc5c1f2e8"
-  associate_public_ip_address = true
-  availability_zone           = "ap-south-1c" # Corrected availability zone
-  instance_type               = "t2.micro"
-  key_name                    = "abdullah_key_new"
-  subnet_id                   = aws_subnet.public_subnet.id
+resource "aws_vpc" "my_vpc" {
+  cidr_block         = "10.0.0.0/16"
+  enable_dns_support = true
 
   tags = {
-    "Name" = "terraform-ec2"
-  }
-
-  vpc_security_group_ids = [aws_security_group.my_security_group.id]
-}
-
-resource "aws_internet_gateway" "my_igw" {
-  tags = {
-    "Name" = "terraform-gateway"
-  }
-
-  vpc_id = aws_vpc.my_vpc.id
-}
-
-resource "aws_route_table" "public_route_table" {
-  tags = {
-    "Name" = "terraform-route-table"
-  }
-
-  vpc_id = aws_vpc.my_vpc.id
-
-  route {
-    cidr_block = "0.0.0.0/0"
-    gateway_id = aws_internet_gateway.my_igw.id
+    "Name" = "terraform-vpc"
   }
 }
 
@@ -46,15 +19,6 @@ resource "aws_subnet" "public_subnet" {
   }
 
   vpc_id = aws_vpc.my_vpc.id
-}
-
-resource "aws_vpc" "my_vpc" {
-  cidr_block         = "10.0.0.0/16"
-  enable_dns_support = true
-
-  tags = {
-    "Name" = "terraform-vpc"
-  }
 }
 
 resource "aws_security_group" "my_security_group" {
@@ -86,3 +50,37 @@ resource "aws_security_group" "my_security_group" {
   }
 }
 
+resource "aws_internet_gateway" "my_igw" {
+  tags = {
+    "Name" = "terraform-gateway"
+  }
+
+  vpc_id = aws_vpc.my_vpc.id
+}
+
+resource "aws_route_table" "public_route_table" {
+  tags = {
+    "Name" = "terraform-route-table"
+  }
+
+  vpc_id = aws_vpc.my_vpc.id
+
+  route {
+    cidr_block = "0.0.0.0/0"
+    gateway_id = aws_internet_gateway.my_igw.id
+  }
+}
+
+resource "aws_instance" "my_instance" {
+  ami                         = "ami-0f58b397bc5c1f2e8"
+  associate_public_ip_address = true
+  availability_zone           = "ap-south-1c"
+  instance_type               = "t2.micro"
+  key_name                    = "abdullah_key_new"
+  subnet_id                   = aws_subnet.public_subnet.id
+
+  tags = {
+    "Name" = "terraform-ec2"
+  }
+
+  vpc_security_group_ids = [aws_security_g
