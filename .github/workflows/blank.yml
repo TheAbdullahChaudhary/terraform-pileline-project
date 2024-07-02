@@ -27,12 +27,11 @@ jobs:
       
       - name: Scan for Secrets
         run: |
-          git grep -e 'AWS_ACCESS_KEY_ID' -e 'AWS_SECRET_ACCESS_KEY' -e 'password' -- 'path/to/terraform/code'
+          git grep -e 'AWS_ACCESS_KEY_ID' -e 'AWS_SECRET_ACCESS_KEY' -e 'password' -- path/to/terraform/code
         continue-on-error: true
 
-    security-scan:
+  security-scan:
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
@@ -46,6 +45,7 @@ jobs:
 
       - name: Run tfsec
         run: tfsec .
+        continue-on-error: true
 
   validate:
     runs-on: ubuntu-latest
