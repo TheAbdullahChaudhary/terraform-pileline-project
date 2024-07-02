@@ -1,4 +1,4 @@
-name: Terraform CI/CD
+name: Terraform Pipeline
 
 on:
   push:
@@ -14,32 +14,31 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
-      
-      - name: Check Terraform formatting
-        run: terraform fmt -check -recursive
 
-  secret-scan:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v2
-      
-      - name: Scan for secrets
-        run: |
-          git grep -e 'AWS_ACCESS_KEY_ID' -e 'AWS_SECRET_ACCESS_KEY' -e 'password' -- 'path/to/terraform/code'
+      - name: Terraform Format Check
+        run: terraform fmt -check -recursive
 
   security-scan:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
-      
+
       - name: Install tfsec
         run: |
           curl -L "$(curl -s https://api.github.com/repos/tfsec/tfsec/releases/latest | grep -o -E "https://.+?tfsec-linux-amd64")" -o tfsec
           chmod +x tfsec
           sudo mv tfsec /usr/local/bin/
-      
+
       - name: Run tfsec
         run: tfsec .
+
+  secret-scan:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Scan for secrets
+        run: git grep -e 'AWS_ACCESS_KEY_ID' -e 'AWS_SECRET_ACCESS_KEY' -e 'password' .
 
