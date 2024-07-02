@@ -30,7 +30,7 @@ jobs:
           git grep -e 'AWS_ACCESS_KEY_ID' -e 'AWS_SECRET_ACCESS_KEY' -e 'password' -- 'path/to/terraform/code'
         continue-on-error: true
 
-  security-scan:
+    security-scan:
     runs-on: ubuntu-latest
 
     steps:
