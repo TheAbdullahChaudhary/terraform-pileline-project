@@ -36,21 +36,21 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v2
 
-      - name: Install tfsec
+  # Choose one of the following approaches for installing tfsec:
+
+      # Option 1: Use a dedicated user with elevated privileges (recommended if possible)
+      # - Create a dedicated user with write permissions to /usr/local/bin
+      # - Update your workflow to use 'sudo -E' with that user for installation steps
+
+      # Option 2: Install tfsec in a temporary directory (alternative)
+      - name: Download tfsec (temporary directory)
         run: |
           LATEST=$(curl -s https://api.github.com/repos/tfsec/tfsec/releases/latest | grep -o -E "https://.+?tfsec-linux-amd64")
           curl -L "$LATEST" -o tfsec
           chmod +x tfsec
-          sudo mv tfsec /usr/local/bin/
 
-      - name: Check tfsec Path
-        run: which tfsec
-
-      - name: Verify Permissions (optional)
-        run: ls -l /usr/local/bin/tfsec  # This step is optional for verification
-
-      - name: Run tfsec
-        run: tfsec .
+      - name: Run tfsec (use relative path if using temporary directory)
+        run: ./tfsec .  # Adjust the path if using temporary directory
 
   validate:
     runs-on: ubuntu-latest
