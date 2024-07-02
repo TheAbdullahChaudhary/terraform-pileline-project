@@ -14,7 +14,7 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
-      
+
       - name: Terraform Format Check
         run: terraform fmt -check -recursive
         continue-on-error: true
@@ -24,7 +24,7 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
-      
+
       - name: Scan for Secrets
         run: |
           git grep -e 'AWS_ACCESS_KEY_ID' -e 'AWS_SECRET_ACCESS_KEY' -e 'password' -- path/to/terraform/code
@@ -43,9 +43,14 @@ jobs:
           chmod +x tfsec
           sudo mv tfsec /usr/local/bin/
 
+      - name: Check tfsec Path
+        run: which tfsec
+
+      - name: Verify Permissions (optional)
+        run: ls -l /usr/local/bin/tfsec  # This step is optional for verification
+
       - name: Run tfsec
         run: tfsec .
-        continue-on-error: true
 
   validate:
     runs-on: ubuntu-latest
