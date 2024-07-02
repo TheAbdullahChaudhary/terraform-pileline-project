@@ -7,18 +7,17 @@ resource "aws_vpc" "my_vpc" {
   enable_dns_support = true
 
   tags = {
-    "Name" = "terraform-vpc"
+    Name = "terraform-vpc"
   }
 }
 
 resource "aws_subnet" "public_subnet" {
-  cidr_block = "10.0.0.0/20"
+  vpc_id     = aws_vpc.my_vpc.id
+  cidr_block = "10.0.1.0/24"
 
   tags = {
-    "Name" = "terraform-subnet"
+    Name = "terraform-subnet"
   }
-
-  vpc_id = aws_vpc.my_vpc.id
 }
 
 resource "aws_security_group" "my_security_group" {
@@ -48,39 +47,43 @@ resource "aws_security_group" "my_security_group" {
     protocol    = "-1"
     cidr_blocks = ["0.0.0.0/0"]
   }
+
+  tags = {
+    Name = "terraform-sg"
+  }
 }
 
 resource "aws_internet_gateway" "my_igw" {
-  tags = {
-    "Name" = "terraform-gateway"
-  }
-
   vpc_id = aws_vpc.my_vpc.id
+
+  tags = {
+    Name = "terraform-igw"
+  }
 }
 
 resource "aws_route_table" "public_route_table" {
-  tags = {
-    "Name" = "terraform-route-table"
-  }
-
   vpc_id = aws_vpc.my_vpc.id
 
   route {
     cidr_block = "0.0.0.0/0"
     gateway_id = aws_internet_gateway.my_igw.id
   }
+
+  tags = {
+    Name = "terraform-route-table"
+  }
 }
 
 resource "aws_instance" "my_instance" {
   ami                         = "ami-0f58b397bc5c1f2e8"
   associate_public_ip_address = true
-  availability_zone           = "ap-south-1c"
+  availability_zone           = "ap-south-1a"  # Corrected availability zone
   instance_type               = "t2.micro"
   key_name                    = "abdullah_key_new"
   subnet_id                   = aws_subnet.public_subnet.id
+  vpc_security_group_ids      = [aws_security_group.my_security_group.id]
 
   tags = {
-    "Name" = "terraform-ec2"
+    Name = "terraform-ec2"
   }
-
-  vpc_security_group_ids = [aws_security_g
+}
