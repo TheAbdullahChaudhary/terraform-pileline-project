@@ -32,18 +32,20 @@ jobs:
 
   security-scan:
     runs-on: ubuntu-latest
+
     steps:
-      - name: Install Tfsec
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Install tfsec
         run: |
-          LATEST=$(curl -s https://api.github.com/repos/tfsec/tfsec/releases/latest)
-          DOWNLOAD_URL=$(echo "$LATEST" | grep browser_download_url | grep tfsec-linux-amd64 | cut -d '"' -f 4)
-          curl -L "$DOWNLOAD_URL" -o tfsec
+          LATEST=$(curl -s https://api.github.com/repos/tfsec/tfsec/releases/latest | grep -o -E "https://.+?tfsec-linux-amd64")
+          curl -L "$LATEST" -o tfsec
           chmod +x tfsec
           sudo mv tfsec /usr/local/bin/
 
-      - name: Run Tfsec Security Scan
+      - name: Run tfsec
         run: tfsec .
-        continue-on-error: true
 
   validate:
     runs-on: ubuntu-latest
