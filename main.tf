@@ -5,7 +5,7 @@ provider "aws" {
 resource "aws_instance" "my_instance" {
   ami                         = "ami-0f58b397bc5c1f2e8"
   associate_public_ip_address = true
-  availability_zone           = "ap-south-1c"  # Corrected availability zone
+  availability_zone           = "ap-south-1c" # Corrected availability zone
   instance_type               = "t2.micro"
   key_name                    = "abdullah_key_new"
   subnet_id                   = aws_subnet.public_subnet.id
@@ -49,7 +49,7 @@ resource "aws_subnet" "public_subnet" {
 }
 
 resource "aws_vpc" "my_vpc" {
-  cidr_block        = "10.0.0.0/16"
+  cidr_block         = "10.0.0.0/16"
   enable_dns_support = true
 
   tags = {
@@ -85,3 +85,4 @@ resource "aws_security_group" "my_security_group" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 }
+
