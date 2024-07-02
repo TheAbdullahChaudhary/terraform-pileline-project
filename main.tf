@@ -5,7 +5,7 @@ provider "aws" {
 resource "aws_instance" "my_instance" {
   ami                         = "ami-0f58b397bc5c1f2e8"
   associate_public_ip_address = true
-  availability_zone           = "ap-south-1b"
+  availability_zone           = "ap-south-1c"  # Corrected availability zone
   instance_type               = "t2.micro"
   key_name                    = "abdullah_key_new"
   subnet_id                   = aws_subnet.public_subnet.id
