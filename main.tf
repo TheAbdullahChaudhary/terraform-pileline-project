@@ -4,11 +4,15 @@ provider "aws" {
 
 resource "aws_instance" "my_instance" {
   ami                         = "ami-0f58b397bc5c1f2e8"
-  associate_public_ip_address = true
+  associate_public_ip_address = false
   availability_zone           = "ap-south-1c" # Corrected availability zone
   instance_type               = "t2.micro"
   key_name                    = "abdullah_key_new"
   subnet_id                   = aws_subnet.public_subnet.id
+
+  metadata_options {
+    http_tokens = "required"
+  }
 
   tags = {
     "Name" = "terraform-ec2"
@@ -79,6 +83,7 @@ resource "aws_security_group" "my_security_group" {
   }
 
   egress {
+    description = "HTTP from anywhere"
     from_port   = 0
     to_port     = 0
     protocol    = "-1"
